@@ -1,5 +1,6 @@
 package models
 
+//primitive.ObjectIDFromHex("5eb3d668b31de5d588f42a7a")
 import (
 	"context"
 	"fmt"
@@ -53,17 +54,17 @@ func GetAllBooks() []Book {
 	return results
 }
 
-func GetBookById(id int64) Book {
+func GetBookById(id int64) (Book, *mongo.Database) {
 	var result Book
 	err := BookCollection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&result)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Found a single document: %+v\n", result)
-	return result
+	return result, db
 }
 
-func CreateBook(b *Book) *Book {
+func (b *Book) CreateBook() *Book {
 	insertResult, err := BookCollection.InsertOne(context.TODO(), b)
 	if err != nil {
 		log.Fatal(err)
@@ -78,4 +79,20 @@ func DeleteBook(id int64) {
 		log.Fatal(err)
 	}
 	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+}
+
+func UpdateBook(id int64, book Book) Book {
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{{"_title", book.Title}}}, {"$set", bson.D{{"_author", book.Author}}}, {"$set", bson.D{{"_isbn", book.Isbn}}}}
+	result, err := BookCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a single document: ", result)
+	var ret Book
+	err = BookCollection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&ret)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ret
 }
