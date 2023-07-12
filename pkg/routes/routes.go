@@ -10,4 +10,5 @@ func RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/book", controllers.GetBooks).Methods("GET")
 	router.HandleFunc("/book/{bookId}", controllers.GetBookById).Methods("GET")
 	router.HandleFunc("/book/{bookId}", controllers.DeleteBook).Methods("DELETE")
+	router.HandleFunc("/book/{bookId}", controllers.UpdateBook).Methods("PUT")
 }

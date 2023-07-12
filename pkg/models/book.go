@@ -28,7 +28,20 @@ func init() {
 	config.Connect()
 	db = config.GetDB()
 	BookCollection = db.Collection("books")
+	// rdpd := Book{
+	// 	12564,
+	// 	"Rich Dad Poor Dad",
+	// 	"Robert Kiyosaki",
+	// 	"something",
+	// }
+
+	// _, err := BookCollection.InsertOne(context.TODO(), rdpd)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }
+
+// initialize()
 
 func GetAllBooks() []Book {
 	var results []Book
